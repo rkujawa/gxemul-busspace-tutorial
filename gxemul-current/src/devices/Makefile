@@ -17,7 +17,7 @@ CPU_TOOLS= generate_alpha_misc generate_arm_dpi generate_arm_r generate_arm_load
 DOXYGEN=\#
 VALGRIND=
 PREFIX=/usr/local
-MANDIR=/usr/local/man
+MANDIR=/usr/local/share/man
 DESTDIR=
 
 #
@@ -47,7 +47,7 @@ OBJS=device.o bus_isa.o bus_pci.o lk201.o \
 	dev_sgi_ip22.o dev_sgi_ip30.o dev_sgi_ip32.o dev_sgi_mardigras.o \
 	dev_sh4.o dev_sii.o dev_sn.o dev_ssc.o dev_turbochannel.o \
 	dev_uninorth.o dev_unreadable.o dev_v3.o dev_vga.o dev_vme.o \
-	dev_vr41xx.o dev_wdc.o dev_z8530.o dev_zero.o dev_hardfoo.o
+	dev_vr41xx.o dev_wdc.o dev_z8530.o dev_zero.o dev_faa.o
 
 all: fonts_done
 	$(MAKE) objs

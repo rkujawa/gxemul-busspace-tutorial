@@ -34,7 +34,6 @@ dev_footbridge.cc  DC21285 "Footbridge" controller; used in Netwinder and Cats
 dev_gc.cc  Grand Central Interrupt controller (used by MacPPC)
 dev_gt.cc  Galileo Technology GT-64xxx PCI controller
 dev_hammerhead.cc  Hammerhead controller, for the secondary CPU on MacPPC machines
-dev_hardfoo.cc  Realtek 8139 ethernet controller
 dev_i80321.cc  Intel i80321 (ARM) core functionality
 dev_igsfb.cc  Integraphics Systems "igsfb" Framebuffer graphics card
 dev_iq80321_7seg.cc  IQ80321 LED device

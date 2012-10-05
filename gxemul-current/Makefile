@@ -17,7 +17,7 @@ CPU_TOOLS= generate_alpha_misc generate_arm_dpi generate_arm_r generate_arm_load
 DOXYGEN=\#
 VALGRIND=
 PREFIX=/usr/local
-MANDIR=/usr/local/man
+MANDIR=/usr/local/share/man
 DESTDIR=
 
 #
