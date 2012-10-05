@@ -103,7 +103,7 @@ MACHINE_SETUP(cobalt)
 	    PCI_VENDOR_SYMBIOS, PCI_PRODUCT_SYMBIOS_860  */
 	bus_pci_add(machine, pci_data, mem, 0,  9, 0, "vt82c586_isa");
 	bus_pci_add(machine, pci_data, mem, 0,  9, 1, "vt82c586_ide");
-	bus_pci_add(machine, pci_data, mem, 0, 12, 0, "hardfoo"); 
+	bus_pci_add(machine, pci_data, mem, 0, 12, 0, "faa"); 
 
 	if (!machine->prom_emulation)
 		return;
