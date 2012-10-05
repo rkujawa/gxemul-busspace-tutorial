@@ -24,8 +24,7 @@
  *  OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  *  SUCH DAMAGE.
  *   
- *
- *  COMMENT: Realtek 8139 ethernet controller
+ *  Fake Cards Advanced Addition Accelerator
  *
  *  TODO: Pretty much everything.
  */
@@ -43,20 +42,24 @@
 #include "misc.h"
 #include "net.h"
 
-#define	DEV_HARDFOO_LENGTH	0x100
+#define	DEV_FAA_LENGTH	0x100
 
-struct hardfoo_data {
+#define FAA_STATUS_BUSY 0x1
 
-	/*  Registers:  */
-	uint8_t			rl_command;
-	uint8_t			rl_eecmd;
+#define FAA_CMD_ADD	0x1
 
+struct faa_data {
+	uint8_t			faa_status;
+	uint8_t			faa_command;
+	uint32_t		faa_data1;
+	uint32_t		faa_data2;
+	uint32_t		faa_result;
 };
 
 
-DEVICE_ACCESS(hardfoo)
+DEVICE_ACCESS(faa)
 {
-	//struct hardfoo_data *d = (struct rtl8139c_data *) extra;
+	struct faa_data *d = (struct faa_data *) extra;
 	uint64_t idata = 0, odata = 0;
 
 	if (writeflag == MEM_WRITE)
@@ -64,46 +67,68 @@ DEVICE_ACCESS(hardfoo)
 
 	switch (relative_addr) {
 
-	case 0x1:
+	/* status register */
+	case 0x0:
 		if (writeflag == MEM_WRITE) {
-			//if (idata & RL_CMD_RESET) {
-				/*  Reset. TODO  */
-
-				/*  ... and then clear the reset bit:  */
+			/* do nothing */
+		} else {
+			odata = d->faa_status;	
+		}
+		break;
+	/* command register */
+	case 0x4:
+		if (writeflag == MEM_WRITE) {
+			//if (idata & FAA_CMD_RESET) {
+				/* clear the reset bit: */
 			//	idata &= ~RL_CMD_RESET;
 			//}
 
-			//d->rl_command = idata;
+			if (idata & FAA_CMD_ADD) {
+				d->faa_status |= FAA_STATUS_BUSY;
+				d->faa_result = d->faa_data1 + d->faa_data2;
+				d->faa_status &= ~FAA_STATUS_BUSY;
+			}
+
+			//d->faa_command = idata;
+
 		} else {
-			//odata = d->rl_command;
+			odata = d->faa_command;
+		}
+		break;
+	/* data1 register */
+	case 0x8:
+		if (writeflag == MEM_WRITE) {
+			d->faa_data1 = idata;
+		} else {
+			odata = d->faa_data1;
 		}
 		break;
 
-	case 0x2:
+	/* data2 register */
+	case 0xC:
 		if (writeflag == MEM_WRITE) {
-		/*	uint8_t old = d->rl_eecmd;
-			d->rl_eecmd = idata;
-
-			if (!d->eeprom_selected && d->rl_eecmd & RL_EE_SEL) {
-				d->eeprom_cur_cmd = 0;
-				d->eeprom_cur_cmd_bit = 0;
-			}
-			d->eeprom_selected = d->rl_eecmd & RL_EE_SEL;
-
-			if (idata & RL_EE_CLK && !(old & RL_EE_CLK))
-				eeprom_clk(d);*/
+			d->faa_data2 = idata;
 		} else {
-			//odata = d->rl_eecmd;
+			odata = d->faa_data2;
+		}
+		break;
+
+	/* result register */
+	case 0x10:
+		if (writeflag == MEM_WRITE) {
+			/* do nothing */
+		} else {
+			odata = d->faa_result;
 		}
 		break;
 
 	default:
 		if (writeflag == MEM_WRITE) {
-			fatal("[ hardfoo: unimplemented write to "
+			fatal("[ faa: unimplemented write to "
 			    "offset 0x%x: data=0x%x ]\n", (int)
 			    relative_addr, (int)idata);
 		} else {
-			fatal("[ hardfoo: unimplemented read from "
+			fatal("[ faa: unimplemented read from "
 			    "offset 0x%x ]\n", (int)relative_addr);
 		}
 		exit(1);
@@ -116,20 +141,20 @@ DEVICE_ACCESS(hardfoo)
 }
 
 
-DEVINIT(hardfoo)
+DEVINIT(faa)
 {
 	char *name2;
 	size_t nlen = 100;
-	struct hardfoo_data *d;
+	struct faa_data *d;
 
-	CHECK_ALLOCATION(d = (struct hardfoo_data *) malloc(sizeof(struct hardfoo_data)));
-	memset(d, 0, sizeof(struct hardfoo_data));
+	CHECK_ALLOCATION(d = (struct faa_data *) malloc(sizeof(struct faa_data)));
+	memset(d, 0, sizeof(struct faa_data));
 
 	CHECK_ALLOCATION(name2 = (char *) malloc(nlen));
-	snprintf(name2, nlen, "hardfoo");
+	snprintf(name2, nlen, "faa");
 
 	memory_device_register(devinit->machine->memory, name2,
-	    devinit->addr, DEV_HARDFOO_LENGTH, dev_hardfoo_access, (void *)d,
+	    devinit->addr, DEV_FAA_LENGTH, dev_faa_access, (void *)d,
 	    DM_DEFAULT, NULL);
 
 
