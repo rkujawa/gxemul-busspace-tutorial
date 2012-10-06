@@ -64,9 +64,9 @@
 extern int verbose;
 
 
-#ifdef UNSTABLE_DEVEL
+/*#ifdef UNSTABLE_DEVEL
 #define debug fatal
-#endif
+#endif*/
 
 
 /*
@@ -1436,6 +1436,7 @@ PCIINIT(ati_radeon_9200_2)
 PCIINIT(faa)
 {
 	uint64_t port, memaddr;
+	char tmpstr[200];
 
 	PCI_SET_DATA(PCI_ID_REG, PCI_ID_CODE(PCI_VENDOR_FAKECARDS,
 	    PCI_PRODUCT_FAKECARDS_AAA));
@@ -1444,4 +1445,9 @@ PCIINIT(faa)
 	    PCI_SUBCLASS_PROCESSOR_COPROC, 0) + 0x01);
 
 	allocate_device_space(pd, 0x0, 0x100, &port, &memaddr);
+
+	snprintf(tmpstr, sizeof(tmpstr), "faa addr=0x%llx "
+	    "pci_little_endian=1", (long long)memaddr);
+	device_add(machine, tmpstr);
 }
+

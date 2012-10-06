@@ -42,7 +42,7 @@
 #include "misc.h"
 #include "net.h"
 
-#define	DEV_FAA_LENGTH	0x100
+#define	DEV_FAA_LENGTH	0x10
 
 #define FAA_STATUS_BUSY 0x1
 
@@ -69,17 +69,17 @@ DEVICE_ACCESS(faa)
 	/* status register */
 	case 0x0:
 		if (writeflag == MEM_WRITE) {
-	                debug("[ faa: STATUS register (0x0) WRITE value %lx ]\n", idata);
+	                fatal("[ faa: STATUS register (0x0) WRITE value %lx ]\n", idata);
 			/* do nothing */
 		} else {
 			odata = d->faa_status;	
-	                debug("[ faa: STATUS register (0x0) READ value %lx ]\n", odata);
+	                fatal("[ faa: STATUS register (0x0) READ value %lx ]\n", odata);
 		}
 		break;
 	/* command register */
 	case 0x4:
 		if (writeflag == MEM_WRITE) {
-	                debug("[ faa: COMMAND register (0x4) WRITE value %lx ]\n", idata);
+	                fatal("[ faa: COMMAND register (0x4) WRITE value %lx ]\n", idata);
 			//if (idata & FAA_CMD_RESET) {
 				/* clear the reset bit: */
 			//	idata &= ~RL_CMD_RESET;
@@ -96,27 +96,27 @@ DEVICE_ACCESS(faa)
 
 		} else {
 			odata = d->faa_command;
-	                debug("[ faa: COMMAND register (0x4) READ value %lx ]\n", odata);
+	                fatal("[ faa: COMMAND register (0x4) READ value %lx ]\n", odata);
 		}
 		break;
 	/* data register */
 	case 0x8:
 		if (writeflag == MEM_WRITE) {
-	                debug("[ faa: DATA register (0x8) WRITE value %lx ]\n", idata);
+	                fatal("[ faa: DATA register (0x8) WRITE value %lx ]\n", idata);
 			d->faa_data = idata;
 		} else {
 			odata = d->faa_data;
-	                debug("[ faa: DATA register (0x8) READ value %lx ]\n", odata);
+	                fatal("[ faa: DATA register (0x8) READ value %lx ]\n", odata);
 		}
 		break;
 	/* result register */
 	case 0xC:
 		if (writeflag == MEM_WRITE) {
-	                debug("[ faa: RESULT register (0xC) WRITE value %lx ]\n", idata);
+	                fatal("[ faa: RESULT register (0xC) WRITE value %lx ]\n", idata);
 			/* do nothing */
 		} else {
 			odata = d->faa_result;
-	                debug("[ faa: RESULT register (0xC) READ value %lx ]\n", odata);
+	                fatal("[ faa: RESULT register (0xC) READ value %lx ]\n", odata);
 		}
 		break;
 
