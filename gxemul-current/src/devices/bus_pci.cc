@@ -1443,5 +1443,5 @@ PCIINIT(faa)
 	PCI_SET_DATA(PCI_CLASS_REG, PCI_CLASS_CODE(PCI_CLASS_PROCESSOR,
 	    PCI_SUBCLASS_PROCESSOR_COPROC, 0) + 0x01);
 
-	allocate_device_space(pd, 0x100, 0x0, &port, &memaddr);
+	allocate_device_space(pd, 0x0, 0x100, &port, &memaddr);
 }

@@ -51,8 +51,7 @@
 struct faa_data {
 	uint8_t			faa_status;
 	uint8_t			faa_command;
-	uint32_t		faa_data1;
-	uint32_t		faa_data2;
+	uint32_t		faa_data;
 	uint32_t		faa_result;
 };
 
@@ -70,55 +69,54 @@ DEVICE_ACCESS(faa)
 	/* status register */
 	case 0x0:
 		if (writeflag == MEM_WRITE) {
+	                debug("[ faa: STATUS register (0x0) WRITE value %lx ]\n", idata);
 			/* do nothing */
 		} else {
 			odata = d->faa_status;	
+	                debug("[ faa: STATUS register (0x0) READ value %lx ]\n", odata);
 		}
 		break;
 	/* command register */
 	case 0x4:
 		if (writeflag == MEM_WRITE) {
+	                debug("[ faa: COMMAND register (0x4) WRITE value %lx ]\n", idata);
 			//if (idata & FAA_CMD_RESET) {
 				/* clear the reset bit: */
 			//	idata &= ~RL_CMD_RESET;
 			//}
 
 			if (idata & FAA_CMD_ADD) {
-				d->faa_status |= FAA_STATUS_BUSY;
+		/*		d->faa_status |= FAA_STATUS_BUSY;
 				d->faa_result = d->faa_data1 + d->faa_data2;
 				d->faa_status &= ~FAA_STATUS_BUSY;
+		*/
 			}
 
 			//d->faa_command = idata;
 
 		} else {
 			odata = d->faa_command;
+	                debug("[ faa: COMMAND register (0x4) READ value %lx ]\n", odata);
 		}
 		break;
-	/* data1 register */
+	/* data register */
 	case 0x8:
 		if (writeflag == MEM_WRITE) {
-			d->faa_data1 = idata;
+	                debug("[ faa: DATA register (0x8) WRITE value %lx ]\n", idata);
+			d->faa_data = idata;
 		} else {
-			odata = d->faa_data1;
+			odata = d->faa_data;
+	                debug("[ faa: DATA register (0x8) READ value %lx ]\n", odata);
 		}
 		break;
-
-	/* data2 register */
+	/* result register */
 	case 0xC:
 		if (writeflag == MEM_WRITE) {
-			d->faa_data2 = idata;
-		} else {
-			odata = d->faa_data2;
-		}
-		break;
-
-	/* result register */
-	case 0x10:
-		if (writeflag == MEM_WRITE) {
+	                debug("[ faa: RESULT register (0xC) WRITE value %lx ]\n", idata);
 			/* do nothing */
 		} else {
 			odata = d->faa_result;
+	                debug("[ faa: RESULT register (0xC) READ value %lx ]\n", odata);
 		}
 		break;
 
