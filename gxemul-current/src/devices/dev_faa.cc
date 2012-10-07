@@ -26,7 +26,6 @@
  *   
  *  Fake Cards Advanced Addition Accelerator
  *
- *  TODO: Pretty much everything.
  */
 
 #include <stdio.h>
@@ -46,12 +45,15 @@
 
 #define FAA_STATUS_BUSY 0x1
 
-#define FAA_CMD_ADD	0x1
+#define FAA_CMD_OPERATION_ADD	1	
+#define FAA_CMD_ACCESS_A	2 
+#define FAA_CMD_ACCESS_B	4 
 
 struct faa_data {
 	uint8_t			faa_status;
 	uint8_t			faa_command;
-	uint32_t		faa_data;
+	uint32_t		faa_data_A;
+	uint32_t		faa_data_B;
 	uint32_t		faa_result;
 };
 
@@ -69,54 +71,63 @@ DEVICE_ACCESS(faa)
 	/* status register */
 	case 0x0:
 		if (writeflag == MEM_WRITE) {
-	                fatal("[ faa: STATUS register (0x0) WRITE value %lx ]\n", idata);
+	                fatal("[ faa: STATUS register (0x0) WRITE value 0x%lx ]\n", idata);
 			/* do nothing */
 		} else {
 			odata = d->faa_status;	
-	                fatal("[ faa: STATUS register (0x0) READ value %lx ]\n", odata);
+	                fatal("[ faa: STATUS register (0x0) READ value 0x%lx ]\n", odata);
 		}
 		break;
 	/* command register */
 	case 0x4:
 		if (writeflag == MEM_WRITE) {
-	                fatal("[ faa: COMMAND register (0x4) WRITE value %lx ]\n", idata);
+	                fatal("[ faa: COMMAND register (0x4) WRITE value 0x%lx ]\n", idata);
 			//if (idata & FAA_CMD_RESET) {
 				/* clear the reset bit: */
 			//	idata &= ~RL_CMD_RESET;
 			//}
 
-			if (idata & FAA_CMD_ADD) {
-		/*		d->faa_status |= FAA_STATUS_BUSY;
-				d->faa_result = d->faa_data1 + d->faa_data2;
+			if (idata & FAA_CMD_OPERATION_ADD) {
+				d->faa_status |= FAA_STATUS_BUSY;
+				d->faa_result = d->faa_data_A + d->faa_data_B;
 				d->faa_status &= ~FAA_STATUS_BUSY;
-		*/
+				d->faa_command &= ~FAA_CMD_OPERATION_ADD;
 			}
 
-			//d->faa_command = idata;
+			d->faa_command = idata;
 
 		} else {
 			odata = d->faa_command;
-	                fatal("[ faa: COMMAND register (0x4) READ value %lx ]\n", odata);
+	                fatal("[ faa: COMMAND register (0x4) READ value 0x%lx ]\n", odata);
 		}
 		break;
 	/* data register */
 	case 0x8:
 		if (writeflag == MEM_WRITE) {
-	                fatal("[ faa: DATA register (0x8) WRITE value %lx ]\n", idata);
-			d->faa_data = idata;
+	                fatal("[ faa: DATA register (0x8) WRITE value 0x%lx ]\n", idata);
+
+			if (d->faa_command == FAA_CMD_ACCESS_A) 
+				d->faa_data_A = idata;
+			if (d->faa_command == FAA_CMD_ACCESS_B)
+				d->faa_data_B = idata;
+
 		} else {
-			odata = d->faa_data;
-	                fatal("[ faa: DATA register (0x8) READ value %lx ]\n", odata);
+	                fatal("[ faa: DATA register (0x8) READ value 0x%lx ]\n", odata);
+
+			if (d->faa_command == FAA_CMD_ACCESS_A) 
+				odata = d->faa_data_A;
+			if (d->faa_command == FAA_CMD_ACCESS_B)
+				odata = d->faa_data_B;
 		}
 		break;
 	/* result register */
 	case 0xC:
 		if (writeflag == MEM_WRITE) {
-	                fatal("[ faa: RESULT register (0xC) WRITE value %lx ]\n", idata);
+	                fatal("[ faa: RESULT register (0xC) WRITE value 0x%lx ]\n", idata);
 			/* do nothing */
 		} else {
 			odata = d->faa_result;
-	                fatal("[ faa: RESULT register (0xC) READ value %lx ]\n", odata);
+	                fatal("[ faa: RESULT register (0xC) READ value 0x%lx ]\n", odata);
 		}
 		break;
 
