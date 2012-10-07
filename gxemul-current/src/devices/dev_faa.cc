@@ -112,12 +112,11 @@ DEVICE_ACCESS(faa)
 				d->faa_data_B = idata;
 
 		} else {
-	                fatal("[ faa: DATA register (0x8) READ value 0x%lx ]\n", odata);
-
 			if (d->faa_command == FAA_CMD_ACCESS_A) 
 				odata = d->faa_data_A;
 			if (d->faa_command == FAA_CMD_ACCESS_B)
 				odata = d->faa_data_B;
+	                fatal("[ faa: DATA register (0x8) READ value 0x%lx ]\n", odata);
 		}
 		break;
 	/* result register */
